@@ -1,0 +1,4 @@
+framework:
+    router:
+        resource: "%kernel.root_dir%/system/config/routing_prod.yml"
+        strict_requirements: true

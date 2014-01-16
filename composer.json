@@ -1,0 +1,19 @@
+{
+    "name": "contao/core",
+    "description": "Contao Open Source CMS",
+    "require": {
+        "symfony/framework-bundle": "2.4.*",
+        "symfony/yaml": "2.4.*"
+    },
+    "license": "LGPL",
+    "authors": [
+        {
+            "name": "Leo Feyer",
+            "email": "leo@contao.org"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-0": {"Contao\\Bundle\\CoreBundle\\": "bundle/"}
+    }
+}
