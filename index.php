@@ -11,15 +11,7 @@
  */
 
 define('TL_MODE', 'FE');
-require_once 'vendor/autoload.php';
-require_once 'AppKernel.php';
 require_once 'system/initialize.php';
 
-use Symfony\Component\HttpFoundation\Request;
-
-$kernel = new AppKernel('prod', false);
-//$kernel->loadClassCache();
-$request = Request::createFromGlobals();
-$response = $kernel->handle($request);
 $response->send();
 $kernel->terminate($request, $response);
