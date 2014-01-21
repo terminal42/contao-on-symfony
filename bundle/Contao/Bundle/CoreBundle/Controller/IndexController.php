@@ -12,35 +12,8 @@
 
 namespace Contao\Bundle\CoreBundle\Controller;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-class IndexController extends \Frontend implements ContainerAwareInterface
+class IndexController extends FrontendController
 {
-    /**
-     * @var ContainerInterface
-     *
-     * @api
-     */
-    protected $container;
-
-    /**
-     * Sets the Container associated with this Controller.
-     *
-     * @param ContainerInterface $container A ContainerInterface instance
-     *
-     * @api
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        // Make the Container globally available (legacy code)
-        $this->container = $GLOBALS['container'] = $container;
-    }
-
-    protected function getRequest()
-    {
-        return $this->container->get('request_stack')->getCurrentRequest();
-    }
 
     public function indexAction()
     {
@@ -416,4 +389,4 @@ class IndexController extends \Frontend implements ContainerAwareInterface
         echo $strBuffer;
         exit;
     }
-} 
+}
