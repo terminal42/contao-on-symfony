@@ -24,7 +24,12 @@ class CoreBundle extends Bundle
 
         // Set Contao config to container
         foreach ($GLOBALS['TL_CONFIG'] as $k => $v) {
-            $container->setParameter('contao.config.' . strtolower($k), $v);
+
+            $configKey = preg_replace_callback('/([A-Z])/', function($c) {
+                return "_" . strtolower($c[1]);
+            }, $k);
+
+            $container->setParameter('contao.config.' . strtolower($configKey), $v);
         }
     }
 }
