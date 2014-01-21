@@ -19,8 +19,8 @@ class CoreBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {
-        $container->setParameter('kernel.trusted_proxies', array('localhost'));
-        $container->setParameter('kernel.secret', 'verysecret');
+        $container->setParameter('kernel.trusted_proxies', trimsplit(',', $GLOBALS['TL_CONFIG']['proxyServerIps']));
+        $container->setParameter('kernel.secret', $GLOBALS['TL_CONFIG']['encryptionKey']);
 
         // Set Contao config to container
         foreach ($GLOBALS['TL_CONFIG'] as $k => $v) {
