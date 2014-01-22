@@ -24,6 +24,9 @@ class ContaoLegacyBundle extends Bundle
     {
         $this->initialize($this->container);
 
+        // Make the Container globally available (legacy code)
+        $GLOBALS['container'] = $this->container;
+
         if (is_array($config = $this->container->getParameter('contao_legacy.config'))) {
             if (is_array($GLOBALS['TL_CONFIG'])) {
                 $GLOBALS['TL_CONFIG'] = array_merge($GLOBALS['TL_CONFIG'], $config);
@@ -68,9 +71,6 @@ class ContaoLegacyBundle extends Bundle
         if (!defined('TL_MODE')) {
             define('TL_MODE', 'FE');
         }
-
-        // Make the Container globally available (legacy code)
-        $GLOBALS['container'] = $this->container;
 
         // Store the microtime
         define('TL_START', microtime(true));
