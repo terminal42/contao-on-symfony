@@ -127,6 +127,9 @@ class ContaoLegacyBundle extends Bundle
             die($e->getMessage()); // see #6343
         }
 
+        // Initialize legacy class loader
+        ClassLoader::register();
+
         // Define the relative path to the installation (see #5339)
         if (file_exists(TL_ROOT . '/system/config/pathconfig.php')) {
             define('TL_PATH', include TL_ROOT . '/system/config/pathconfig.php');
