@@ -2,3 +2,9 @@ framework:
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: true
+
+services:
+    contao_legacy.frontend_loader:
+        class: Contao\Bundle\LegacyBundle\Routing\FrontendLoader
+        tags:
+            - { name: routing.loader }

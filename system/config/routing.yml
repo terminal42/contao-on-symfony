@@ -1,2 +1,3 @@
 contao_legacy:
-    resource: "@LegacyBundle/Resources/config/routing.yml"
+    resource: .
+    type: contao_legacy_frontend

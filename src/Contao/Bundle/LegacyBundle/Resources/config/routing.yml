@@ -1,5 +1,0 @@
-contao_legacy_frontend:
-    path:   /{alias}
-    defaults:  { _controller: LegacyBundle:Frontend:index }
-    requirements:
-        alias: ".*"
