@@ -17,23 +17,32 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class LegacyBundle extends Bundle
 {
+
+    /**
+     * Initialize Contao legacy config
+     */
+    public function boot()
+    {
+        $GLOBALS['TL_CONFIG'] = $this->container->getParameter('contao_legacy.config');
+    }
+
+    /**
+     * Pass legacy Contao config to DIC before building the cache
+     *
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     */
     public function build(ContainerBuilder $container)
     {
         $container->setParameter('kernel.trusted_proxies', trimsplit(',', $GLOBALS['TL_CONFIG']['proxyServerIps']));
+
+        // @todo check if secret is not publicly visible that way (because of CSRF protection)
         $container->setParameter('kernel.secret', $GLOBALS['TL_CONFIG']['encryptionKey']);
 
         if ($container->getParameter('kernel.charset') === '') {
             $container->setParameter('kernel.charset', strtoupper($GLOBALS['TL_CONFIG']['characterSet']));
         }
 
-        // Set Contao config to container
-        foreach ($GLOBALS['TL_CONFIG'] as $k => $v) {
-
-            $configKey = preg_replace_callback('/([A-Z])/', function($c) {
-                return "_" . strtolower($c[1]);
-            }, $k);
-
-            $container->setParameter('contao.config.' . strtolower($configKey), $v);
-        }
+        // Cache config config in DIC so it can be set on boot
+        $container->setParameter('contao_legacy.config', $GLOBALS['TL_CONFIG']);
     }
 }
