@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-class FrontendLoader extends Loader
+class LegacyLoader extends Loader
 {
     protected $container;
 
@@ -47,6 +47,6 @@ class FrontendLoader extends Loader
 
     public function supports($resource, $type = null)
     {
-        return 'contao_legacy_frontend' === $type;
+        return 'contao_legacy' === $type;
     }
 }
