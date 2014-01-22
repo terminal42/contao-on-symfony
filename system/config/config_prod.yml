@@ -6,5 +6,6 @@ framework:
 services:
     contao_legacy.frontend_loader:
         class: Contao\Bundle\LegacyBundle\Routing\FrontendLoader
+        arguments: ['@service_container']
         tags:
             - { name: routing.loader }

@@ -3,16 +3,23 @@
 namespace Contao\Bundle\LegacyBundle\Routing;
 
 use Symfony\Component\Config\Loader\Loader;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 class FrontendLoader extends Loader
 {
+    protected $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     public function load($resource, $type = null)
     {
-        $routes = new RouteCollection();
+        $config = $this->container->getParameter('contao_legacy.config');
 
-        // prepare a new route
         $pattern = '/{alias}';
         $defaults = array(
             '_controller' => 'LegacyBundle:Frontend:index',
@@ -20,11 +27,20 @@ class FrontendLoader extends Loader
         $requirements = array(
             'alias' => '.*',
         );
-        $route = new Route($pattern, $defaults, $requirements);
 
-        // add the new route to the route collection:
-        $routeName = 'contao_legacy_frontend';
-        $routes->add($routeName, $route);
+        if ($config['urlSuffix'] != '') {
+            $pattern .= '.{_format}';
+            $requirements['_format'] = substr($config['urlSuffix'], 1);
+            $defaults['_format'] = substr($config['urlSuffix'], 1);
+        }
+
+        if ($config['addLanguageToUrl']) {
+            $pattern = '/{_locale}' . $pattern;
+        }
+
+        $routes = new RouteCollection();
+        $route = new Route($pattern, $defaults, $requirements);
+        $routes->add('contao_legacy_frontend', $route);
 
         return $routes;
     }
