@@ -39,7 +39,7 @@ class LegacyBundle extends Bundle
         // When building the cache, we must initialize Contao first
         $this->initialize($container);
 
-        $container->setParameter('kernel.trusted_proxies', trimsplit(',', $GLOBALS['TL_CONFIG']['proxyServerIps']));
+        $container->setParameter('kernel.trusted_proxies', array_map('trim', explode(',', $GLOBALS['TL_CONFIG']['proxyServerIps'])));
 
         // @todo check if secret is not publicly visible that way (because of CSRF protection)
         $container->setParameter('kernel.secret', $GLOBALS['TL_CONFIG']['encryptionKey']);
