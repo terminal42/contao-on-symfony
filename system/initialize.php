@@ -14,3 +14,4 @@ require_once dirname(__DIR__) . '/system/autoload.php';
 require_once __DIR__ . '/AppKernel.php';
 
 $kernel = new AppKernel('legacy', false);
+$kernel->boot();
