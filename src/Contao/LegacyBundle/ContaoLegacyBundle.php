@@ -71,6 +71,9 @@ class ContaoLegacyBundle extends Bundle
             define('TL_MODE', 'FE');
         }
 
+        // Make the Container globally available (legacy code)
+        $GLOBALS['container'] = $this->container;
+
         // Store the microtime
         define('TL_START', microtime(true));
 

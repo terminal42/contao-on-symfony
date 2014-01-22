@@ -34,8 +34,7 @@ class FrontendController extends \Frontend implements ContainerAwareInterface
      */
     public function setContainer(ContainerInterface $container = null)
     {
-        // Make the Container globally available (legacy code)
-        $this->container = $GLOBALS['container'] = $container;
+        $this->container = $container;
     }
 
     public function indexAction()
