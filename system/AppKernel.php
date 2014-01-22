@@ -25,7 +25,7 @@ class AppKernel extends Kernel
         define('TL_START', microtime(true));
 
         // Define the root path to the Contao installation
-        define('TL_ROOT', $this->getRootDir());
+        define('TL_ROOT', dirname($this->rootDir));
 
         // Define the login status constants in the back end (see #4099, #5279)
         if (TL_MODE == 'BE') {
@@ -36,10 +36,10 @@ class AppKernel extends Kernel
         define('TL_REFERER_ID', substr(md5(TL_START), 0, 8));
 
         // Include the helpers
-        require $this->getRootDir() . '/system/helper/functions.php';
-        require $this->getRootDir() . '/system/config/constants.php';
-        require $this->getRootDir() . '/system/helper/interface.php';
-        require $this->getRootDir() . '/system/helper/exception.php';
+        require $this->rootDir . '/../system/helper/functions.php';
+        require $this->rootDir . '/../system/config/constants.php';
+        require $this->rootDir . '/../system/helper/interface.php';
+        require $this->rootDir . '/../system/helper/exception.php';
 
         // Try to disable the PHPSESSID
         @ini_set('session.use_trans_sid', 0);
@@ -50,19 +50,19 @@ class AppKernel extends Kernel
         @set_exception_handler('__exception');
 
         // Log PHP errors
-        @ini_set('error_log', $this->getRootDir() . '/system/logs/error.log');
+        @ini_set('error_log', $this->rootDir . '/../system/logs/error.log');
 
         // Include some classes required for further processing
-        require $this->getRootDir() . '/system/modules/core/library/Contao/Config.php';
+        require $this->rootDir . '/../system/modules/core/library/Contao/Config.php';
         class_alias('Contao\\Config', 'Config');
 
-        require $this->getRootDir() . '/system/modules/core/library/Contao/ClassLoader.php';
+        require $this->rootDir . '/../system/modules/core/library/Contao/ClassLoader.php';
         class_alias('Contao\\ClassLoader', 'ClassLoader');
 
-        require $this->getRootDir() . '/system/modules/core/library/Contao/TemplateLoader.php';
+        require $this->rootDir . '/../system/modules/core/library/Contao/TemplateLoader.php';
         class_alias('Contao\\TemplateLoader', 'TemplateLoader');
 
-        require $this->getRootDir() . '/system/modules/core/library/Contao/ModuleLoader.php';
+        require $this->rootDir . '/../system/modules/core/library/Contao/ModuleLoader.php';
         class_alias('Contao\\ModuleLoader', 'ModuleLoader');
 
         Config::preload(); // see #5872
@@ -75,8 +75,8 @@ class AppKernel extends Kernel
         }
 
         // Define the relative path to the installation (see #5339)
-        if (file_exists($this->getRootDir() . '/system/config/pathconfig.php')) {
-            define('TL_PATH', include $this->getRootDir() . '/system/config/pathconfig.php');
+        if (file_exists($this->rootDir . '/../system/config/pathconfig.php')) {
+            define('TL_PATH', include $this->rootDir . '/../system/config/pathconfig.php');
         } elseif (TL_MODE == 'BE') {
             define('TL_PATH', preg_replace('/\/contao\/[^\/]*$/i', '', Environment::get('requestUri')));
         } else {
@@ -107,7 +107,7 @@ class AppKernel extends Kernel
             $GLOBALS['TL_LANGUAGE'] = $_SESSION['TL_LANGUAGE'];
         } else {
             foreach (Environment::get('httpAcceptLanguage') as $v) {
-                if (is_dir($this->getRootDir() . '/system/modules/core/languages/' . str_replace('-', '_', $v))) {
+                if (is_dir($this->rootDir . '/../system/modules/core/languages/' . str_replace('-', '_', $v))) {
                     $GLOBALS['TL_LANGUAGE'] = $v;
                     $_SESSION['TL_LANGUAGE'] = $v;
                     break;
@@ -143,8 +143,8 @@ class AppKernel extends Kernel
          * configuration file exists, otherwise it will initialize a Files object and
          * prevent the install tool from loading the Safe Mode Hack (see #3215).
          */
-        if (TL_PATH !== null && !file_exists($this->getRootDir() . '/system/config/pathconfig.php')) {
-            if (is_writable($this->getRootDir() . '/system/tmp') && file_exists($this->getRootDir() . '/system/config/localconfig.php')) {
+        if (TL_PATH !== null && !file_exists($this->rootDir . '/../system/config/pathconfig.php')) {
+            if (is_writable($this->rootDir . '/../system/tmp') && file_exists($this->rootDir . '/../system/config/localconfig.php')) {
                 try {
                     $objFile = new File('system/config/pathconfig.php', true);
                     $objFile->write("<?php\n\n// Relative path to the installation\nreturn '" . TL_PATH . "';\n");
@@ -168,8 +168,8 @@ class AppKernel extends Kernel
         }
 
         // Include the custom initialization file
-        if (file_exists($this->getRootDir() . '/system/config/initconfig.php')) {
-            include $this->getRootDir() . '/system/config/initconfig.php';
+        if (file_exists($this->rootDir . '/../system/config/initconfig.php')) {
+            include $this->rootDir . '/../system/config/initconfig.php';
         }
 
         // Check the request token upon POST requests
@@ -201,25 +201,5 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
-    }
-
-    public function getRootDir()
-    {
-        if (null === $this->rootDir) {
-            $r = new \ReflectionObject($this);
-            $this->rootDir = str_replace('\\', '/', dirname(dirname($r->getFileName())));
-        }
-
-        return $this->rootDir;
-    }
-
-    public function getCacheDir()
-    {
-        return $this->getRootDir().'/system/cache';
-    }
-
-    public function getLogDir()
-    {
-        return $this->getRootDir().'/system/logs';
     }
 }

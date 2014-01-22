@@ -1,4 +1,4 @@
 framework:
     router:
-        resource: "%kernel.root_dir%/system/config/routing.yml"
+        resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: true
