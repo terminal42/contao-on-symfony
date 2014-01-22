@@ -1,6 +1,6 @@
 index:
     path:   /
-    defaults:  { _controller: CoreBundle:Index:index }
+    defaults:  { _controller: LegacyBundle:Frontend:index }
 page:
     path:   /{platzhalter}
-    defaults:  { _controller: CoreBundle:Index:index }
+    defaults:  { _controller: LegacyBundle:Frontend:index }
