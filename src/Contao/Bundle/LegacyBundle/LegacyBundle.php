@@ -26,7 +26,13 @@ class LegacyBundle extends Bundle
     {
         $this->initialize($this->container);
 
-        $GLOBALS['TL_CONFIG'] = $this->container->getParameter('contao_legacy.config');
+        if (is_array($config = $this->container->getParameter('contao_legacy.config'))) {
+            if (is_array($GLOBALS['TL_CONFIG'])) {
+                $GLOBALS['TL_CONFIG'] = array_merge($GLOBALS['TL_CONFIG'], $config);
+            } else {
+                $GLOBALS['TL_CONFIG'] = $config;
+            }
+        }
     }
 
     /**
