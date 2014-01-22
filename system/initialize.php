@@ -13,9 +13,4 @@
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once __DIR__ . '/AppKernel.php';
 
-use Symfony\Component\HttpFoundation\Request;
-
-$kernel = new AppKernel('prod', false);
-//$kernel->loadClassCache();
-$request = Request::createFromGlobals();
-$response = $kernel->handle($request);
+$kernel = new AppKernel('legacy', false);

@@ -17,6 +17,24 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class AppKernel extends Kernel
 {
 
+    /**
+     * Constructor.
+     *
+     * @param string  $environment The environment
+     * @param Boolean $debug       Whether to enable debugging or not
+     *
+     * @api
+     */
+    public function __construct($environment, $debug)
+    {
+        parent::__construct($environment, $debug);
+
+        if ($environment === 'legacy') {
+            $this->boot();
+        }
+    }
+
+
     public function registerBundles()
     {
         $bundles = array(
