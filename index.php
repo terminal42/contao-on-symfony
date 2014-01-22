@@ -10,7 +10,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/system/autoload.php';
 require_once __DIR__ . '/system/AppKernel.php';
 
 use Symfony\Component\HttpFoundation\Request;
