@@ -1,6 +1,6 @@
 <?php
 
-namespace Contao\Bundle\LegacyBundle\Routing;
+namespace Contao\LegacyBundle\Routing;
 
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -22,7 +22,7 @@ class FrontendLoader extends Loader
 
         $pattern = '/{alias}';
         $defaults = array(
-            '_controller' => 'LegacyBundle:Frontend:index',
+            '_controller' => 'ContaoLegacyBundle:Frontend:index',
         );
         $requirements = array(
             'alias' => '.*',

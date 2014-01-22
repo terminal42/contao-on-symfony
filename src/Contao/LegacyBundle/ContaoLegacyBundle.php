@@ -10,12 +10,12 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao\Bundle\LegacyBundle;
+namespace Contao\LegacyBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class LegacyBundle extends Bundle
+class ContaoLegacyBundle extends Bundle
 {
     protected $initialized = false;
 
