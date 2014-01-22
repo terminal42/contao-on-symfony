@@ -202,4 +202,14 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
     }
+
+    /**
+     * Let the ContaoLegacyBundle set charset from localconfig.php
+     *
+     * @return  string
+     */
+    public function getCharset()
+    {
+        return '';
+    }
 }
