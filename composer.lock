@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c0a47a4f399039c8610b0fb9ff92132b",
+    "hash": "03b31df003aba10df0f66303a9d83cfe",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1112,7 +1112,161 @@
         }
     ],
     "packages-dev": [
-
+        {
+            "name": "symfony/browser-kit",
+            "version": "v2.4.1",
+            "target-dir": "Symfony/Component/BrowserKit",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/BrowserKit.git",
+                "reference": "0248b2dfc9cd6b259555d232eedfb1283eb496c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/BrowserKit/zipball/0248b2dfc9cd6b259555d232eedfb1283eb496c3",
+                "reference": "0248b2dfc9cd6b259555d232eedfb1283eb496c3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/dom-crawler": "~2.0"
+            },
+            "require-dev": {
+                "symfony/css-selector": "~2.0",
+                "symfony/process": "~2.0"
+            },
+            "suggest": {
+                "symfony/process": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\BrowserKit\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony BrowserKit Component",
+            "homepage": "http://symfony.com",
+            "time": "2013-12-28 21:39:51"
+        },
+        {
+            "name": "symfony/dom-crawler",
+            "version": "v2.4.1",
+            "target-dir": "Symfony/Component/DomCrawler",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/DomCrawler.git",
+                "reference": "58e85928ad277c67102a41a046160de86df44d55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/58e85928ad277c67102a41a046160de86df44d55",
+                "reference": "58e85928ad277c67102a41a046160de86df44d55",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/css-selector": "~2.0"
+            },
+            "suggest": {
+                "symfony/css-selector": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\DomCrawler\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony DomCrawler Component",
+            "homepage": "http://symfony.com",
+            "time": "2013-12-29 20:33:52"
+        },
+        {
+            "name": "symfony/finder",
+            "version": "v2.4.1",
+            "target-dir": "Symfony/Component/Finder",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Finder.git",
+                "reference": "6904345cf2b3bbab1f6d6e4ce1724cb99df9f00a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/6904345cf2b3bbab1f6d6e4ce1724cb99df9f00a",
+                "reference": "6904345cf2b3bbab1f6d6e4ce1724cb99df9f00a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Finder\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Finder Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-01-01 08:14:50"
+        }
     ],
     "aliases": [
 
