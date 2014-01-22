@@ -17,8 +17,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class ContaoLegacyBundle extends Bundle
 {
-    protected $initialized = false;
-
     /**
      * Boots the Bundle.
      */
@@ -63,7 +61,7 @@ class ContaoLegacyBundle extends Bundle
      */
     protected function initialize($container)
     {
-        if ($this->initialized) {
+        if (defined('TL_ROOT')) {
             return;
         }
 
@@ -240,7 +238,5 @@ class ContaoLegacyBundle extends Bundle
 
             exit;
         }
-
-        $this->initialized = true;
     }
 }
