@@ -1,0 +1,2 @@
+contao_legacy:
+    resource: "@ContaoBundleLegacyBundle/Resources/config/routing.yml"
