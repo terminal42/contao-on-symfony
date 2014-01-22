@@ -16,6 +16,6 @@
     ],
     "minimum-stability": "stable",
     "autoload": {
-        "psr-0": {"Contao\\Bundle\\CoreBundle\\": "bundle/"}
+        "psr-0": {"Contao\\": "src/"}
     }
 }
