@@ -21,6 +21,11 @@ class EnvironmentTest extends WebTestCase
         }
     }
 
+    public function initializeRequestWithServer($server)
+    {
+        $this->request->initialize(array(), array(), array(), array(), array(), $server);
+    }
+
 
     /**
      * TESTS
@@ -28,14 +33,21 @@ class EnvironmentTest extends WebTestCase
 
     public function testHttpHost()
     {
-        $this->request->server->set('SERVER_NAME', 'localhost');
-        $this->request->server->set('SERVER_PORT', 80);
+        $this->initializeRequestWithServer(array(
+            'SERVER_NAME' => 'localhost',
+            'SERVER_PORT' => 80
+        ));
         $this->assertEquals('localhost', \Environment::get('httpHost'));
 
-        $this->request->server->set('SERVER_PORT', 443);
+        $this->initializeRequestWithServer(array(
+            'SERVER_NAME' => 'localhost',
+            'SERVER_PORT' => 443
+        ));
         $this->assertEquals('localhost:443', \Environment::get('httpHost'));
 
-        $this->request->server->set('HTTP_HOST', 'example.com');
+        $this->initializeRequestWithServer(array(
+            'HTTP_HOST' => 'example.com'
+        ));
         $this->assertEquals('example.com', \Environment::get('httpHost'));
     }
 
@@ -43,7 +55,9 @@ class EnvironmentTest extends WebTestCase
     {
         $this->assertFalse(\Environment::get('isAjaxRequest'));
 
-        $this->request->server->set('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
+        $this->initializeRequestWithServer(array(
+            'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest'
+        ));
 
         $this->assertTrue(\Environment::get('isAjaxRequest'));
     }
