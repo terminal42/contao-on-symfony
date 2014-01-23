@@ -69,13 +69,7 @@ class Environment
 			$arrChunks = preg_split('/([A-Z][a-z]*)/', $strKey, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
 			$strServerKey = strtoupper(implode('_', $arrChunks));
 
-            global $container;
-
-            if (null === $container || ($request = $container->get('request_stack')->getCurrentRequest()) === null) {
-                $request = Request::createFromGlobals();
-            }
-
-			return $request->server->get($strServerKey);
+			return static::getRequest()->server->get($strServerKey);
 		}
 	}
 
@@ -631,5 +625,21 @@ class Environment
 		}
 
 		return static::$objInstance;
+	}
+
+
+	/**
+	 * Return Symfony Request from DIC or create from globals
+	 * @return  Request
+	 */
+	public static function getRequest()
+	{
+    	global $container;
+
+        if (null === $container || ($request = $container->get('request_stack')->getCurrentRequest()) === null) {
+            $request = Request::createFromGlobals();
+        }
+
+        return $request;
 	}
 }
