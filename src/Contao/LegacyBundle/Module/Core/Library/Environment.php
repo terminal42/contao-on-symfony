@@ -60,16 +60,14 @@ class Environment
 
 		if (in_array($strKey, get_class_methods('Environment')))
 		{
-			static::$arrCache[$strKey] = static::$strKey();
+			return static::$strKey();
 		}
 		else
 		{
 			$arrChunks = preg_split('/([A-Z][a-z]*)/', $strKey, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
 			$strServerKey = strtoupper(implode('_', $arrChunks));
-			static::$arrCache[$strKey] = $_SERVER[$strServerKey];
+			return $_SERVER[$strServerKey];
 		}
-
-		return static::$arrCache[$strKey];
 	}
 
 
