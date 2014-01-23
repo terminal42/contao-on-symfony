@@ -15,6 +15,7 @@ class ClassLoader
      * @var array
      */
     private $classMap = array(
+        'Environment' => 'Contao\LegacyBundle\Module\Core\Library\Environment'
     );
 
     /**
