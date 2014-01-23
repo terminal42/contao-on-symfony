@@ -116,7 +116,7 @@ class FrontendController extends \Frontend implements ContainerAwareInterface
                 }
             }
 
-            $strHost = Environment::get('host');
+            $strHost = \Environment::get('host');
 
             // Look for a root page whose domain name matches the host name
             if (isset($arrPages[$strHost]))
@@ -254,7 +254,7 @@ class FrontendController extends \Frontend implements ContainerAwareInterface
                     break;
             }
         }
-        catch (UnusedArgumentsException $e)
+        catch (\UnusedArgumentsException $e)
         {
             // Render the error page (see #5570)
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
