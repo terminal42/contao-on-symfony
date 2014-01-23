@@ -12,6 +12,8 @@
 
 namespace Contao\LegacyBundle\Module\Core\Library;
 
+use Symfony\Component\HttpFoundation\Request;
+
 
 /**
  * Reads the environment variables
@@ -68,9 +70,12 @@ class Environment
 			$strServerKey = strtoupper(implode('_', $arrChunks));
 
             global $container;
-            $request = $container->get('request_stack')->getCurrentRequest();
 
-			return (null === $request) ? null : $request->server->get($strServerKey);
+            if (null === $container || ($request = $container->get('request_stack')->getCurrentRequest()) === null) {
+                $request = Request::createFromGlobals();
+            }
+
+			return $request->server->get($strServerKey);
 		}
 	}
 
