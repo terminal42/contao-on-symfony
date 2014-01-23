@@ -634,10 +634,15 @@ class Environment
 	 */
 	public static function getRequest()
 	{
+        static $globalRequest;
     	global $container;
 
         if (null === $container || ($request = $container->get('request_stack')->getCurrentRequest()) === null) {
-            $request = Request::createFromGlobals();
+            if (null === $globalRequest) {
+                $globalRequest = Request::createFromGlobals();
+            }
+
+            $request = $globalRequest;
         }
 
         return $request;
