@@ -482,7 +482,7 @@ class Environment
 	 */
 	protected static function isAjaxRequest()
 	{
-		return (static::get('HttpXRequestedWith') == 'XMLHttpRequest');
+		return static::getRequest()->isXmlHttpRequest();
 	}
 
 
