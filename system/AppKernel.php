@@ -19,8 +19,8 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         $bundles = array(
-            new Contao\LegacyBundle\ContaoLegacyBundle(),
-            new Symfony\Bundle\FrameworkBundle\FrameworkBundle()
+            new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new Contao\LegacyBundle\ContaoLegacyBundle()
         );
 
         return $bundles;
