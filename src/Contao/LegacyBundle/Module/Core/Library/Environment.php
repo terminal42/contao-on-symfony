@@ -10,7 +10,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
 
-namespace Contao;
+namespace Contao\LegacyBundle\Module\Core\Library;
+
+use Symfony\Component\HttpFoundation\Request;
 
 
 /**
@@ -58,18 +60,17 @@ class Environment
 			return static::$arrCache[$strKey];
 		}
 
-		if (in_array($strKey, get_class_methods('Environment')))
+		if (in_array($strKey, get_class_methods(get_class())))
 		{
-			static::$arrCache[$strKey] = static::$strKey();
+			return static::$strKey();
 		}
 		else
 		{
 			$arrChunks = preg_split('/([A-Z][a-z]*)/', $strKey, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
 			$strServerKey = strtoupper(implode('_', $arrChunks));
-			static::$arrCache[$strKey] = $_SERVER[$strServerKey];
-		}
 
-		return static::$arrCache[$strKey];
+			return static::getRequest()->server->get($strServerKey);
+		}
 	}
 
 
@@ -92,7 +93,7 @@ class Environment
 	 */
 	protected static function scriptFilename()
 	{
-		return str_replace('//', '/', str_replace('\\', '/', (PHP_SAPI == 'cgi' || PHP_SAPI == 'isapi' || PHP_SAPI == 'cgi-fcgi' || PHP_SAPI == 'fpm-fcgi') && ($_SERVER['ORIG_PATH_TRANSLATED'] ? $_SERVER['ORIG_PATH_TRANSLATED'] : $_SERVER['PATH_TRANSLATED']) ? ($_SERVER['ORIG_PATH_TRANSLATED'] ? $_SERVER['ORIG_PATH_TRANSLATED'] : $_SERVER['PATH_TRANSLATED']) : ($_SERVER['ORIG_SCRIPT_FILENAME'] ? $_SERVER['ORIG_SCRIPT_FILENAME'] : $_SERVER['SCRIPT_FILENAME'])));
+		return str_replace('//', '/', str_replace('\\', '/', (PHP_SAPI == 'cgi' || PHP_SAPI == 'isapi' || PHP_SAPI == 'cgi-fcgi' || PHP_SAPI == 'fpm-fcgi') && (static::get('OrigPathTranslated') ?: static::get('PathTranslated')) ? (static::get('OrigPathTranslated') ?: static::get('PathTranslated')) : (static::get('OrigScriptFilename') ?: static::get('ScriptFilename'))));
 	}
 
 
@@ -103,7 +104,7 @@ class Environment
 	 */
 	protected static function scriptName()
 	{
-		return (PHP_SAPI == 'cgi' || PHP_SAPI == 'isapi' || PHP_SAPI == 'cgi-fcgi' || PHP_SAPI == 'fpm-fcgi') && ($_SERVER['ORIG_PATH_INFO'] ? $_SERVER['ORIG_PATH_INFO'] : $_SERVER['PATH_INFO']) ? ($_SERVER['ORIG_PATH_INFO'] ? $_SERVER['ORIG_PATH_INFO'] : $_SERVER['PATH_INFO']) : ($_SERVER['ORIG_SCRIPT_NAME'] ? $_SERVER['ORIG_SCRIPT_NAME'] : $_SERVER['SCRIPT_NAME']);
+		return (PHP_SAPI == 'cgi' || PHP_SAPI == 'isapi' || PHP_SAPI == 'cgi-fcgi' || PHP_SAPI == 'fpm-fcgi') && (static::get('OrigPathInfo') ?: static::get('PathInfo')) ? (static::get('OrigPathInfo') ?: static::get('PathInfo')) : (static::get('OrigScriptName') ?: static::get('ScriptName'));
 	}
 
 
@@ -136,7 +137,7 @@ class Environment
 		// Fallback to DOCUMENT_ROOT if SCRIPT_FILENAME and SCRIPT_NAME point to different files
 		if (basename($scriptName) != basename($scriptFilename))
 		{
-			return str_replace('//', '/', str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'])));
+			return str_replace('//', '/', str_replace('\\', '/', realpath(static::get('DocumentRoot'))));
 		}
 
 		if (substr($scriptFilename, 0, 1) == '/')
@@ -173,13 +174,13 @@ class Environment
 	 */
 	protected static function requestUri()
 	{
-		if (!empty($_SERVER['REQUEST_URI']))
+		if (static::get('RequestUri') != '')
 		{
-			return $_SERVER['REQUEST_URI'];
+			return static::get('RequestUri');
 		}
 		else
 		{
-			return '/' . preg_replace('/^\//', '', static::get('scriptName')) . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
+			return '/' . preg_replace('/^\//', '', static::get('scriptName')) . (static::get('QueryString') != '' ? '?' . static::get('QueryString') : '');
 		}
 	}
 
@@ -197,7 +198,7 @@ class Environment
 		$arrLanguages = array();
 
 		// The implementation differs from the original implementation and also works with .jp browsers
-		preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $arrAccepted);
+		preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', static::get('HttpAcceptLanguage'), $arrAccepted);
 
 		// Remove all invalid locales
 		foreach ($arrAccepted[1] as $v)
@@ -235,7 +236,7 @@ class Environment
 	 */
 	protected static function httpAcceptEncoding()
 	{
-		return array_values(array_unique(explode(',', strtolower($_SERVER['HTTP_ACCEPT_ENCODING']))));
+		return array_values(array_unique(explode(',', strtolower(static::get('HttpAcceptEncoding')))));
 	}
 
 
@@ -246,7 +247,7 @@ class Environment
 	 */
 	protected static function httpUserAgent()
 	{
-		$ua = strip_tags($_SERVER['HTTP_USER_AGENT']);
+		$ua = strip_tags(static::get('HttpUserAgent'));
 		$ua = preg_replace('/javascript|vbscri?pt|script|applet|alert|document|write|cookie/i', '', $ua);
 
 		return substr($ua, 0, 255);
@@ -260,17 +261,17 @@ class Environment
 	 */
 	protected static function httpHost()
 	{
-		if (!empty($_SERVER['HTTP_HOST']))
+		if (static::get('HttpHost') != '')
 		{
-			$host = $_SERVER['HTTP_HOST'];
+			$host = static::get('HttpHost');
 		}
 		else
 		{
-			$host = $_SERVER['SERVER_NAME'];
+			$host = static::get('ServerName');
 
-			if ($_SERVER['SERVER_PORT'] != 80)
+			if (static::get('ServerPort') != 80)
 			{
-				$host .= ':' . $_SERVER['SERVER_PORT'];
+				$host .= ':' . static::get('ServerPort');
 			}
 		}
 
@@ -285,7 +286,7 @@ class Environment
 	 */
 	protected static function httpXForwardedHost()
 	{
-		return preg_replace('/[^A-Za-z0-9\[\]\.:-]/', '', $_SERVER['HTTP_X_FORWARDED_HOST']);
+		return preg_replace('/[^A-Za-z0-9\[\]\.:-]/', '', static::get('HttpXForwardedHost'));
 	}
 
 
@@ -296,7 +297,7 @@ class Environment
 	 */
 	protected static function ssl()
 	{
-		return ($_SERVER['SSL_SESSION_ID'] || $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1);
+		return (static::get('SslSessionId') || static::get('Https') == 'on' || static::get('Https') == 1);
 	}
 
 
@@ -339,12 +340,12 @@ class Environment
 	protected static function ip()
 	{
 		// No X-Forwarded-For IP
-		if (empty($_SERVER['HTTP_X_FORWARDED_FOR']) || !preg_match('/^[A-Fa-f0-9, \.\:]+$/', $_SERVER['HTTP_X_FORWARDED_FOR']))
+		if (static::get('HttpXForwardedFor') != '' || !preg_match('/^[A-Fa-f0-9, \.\:]+$/', static::get('HttpXForwardedFor')))
 		{
-			return substr($_SERVER['REMOTE_ADDR'], 0, 64);
+			return substr(static::get('RemoteAddr'), 0, 64);
 		}
 
-		$strXip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		$strXip = static::get('HttpXForwardedFor');
 		$arrTrusted = trimsplit(',', $GLOBALS['TL_CONFIG']['proxyServerIps']);
 
 		// Generate an array of X-Forwarded-For IPs
@@ -369,7 +370,7 @@ class Environment
 		}
 
 		// If all X-Forward-For IPs are trusted, return the remote address
-		return substr($_SERVER['REMOTE_ADDR'], 0, 64);
+		return substr(static::get('RemoteAddr'), 0, 64);
 	}
 
 
@@ -380,12 +381,12 @@ class Environment
 	 */
 	protected static function server()
 	{
-		$strServer = !empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : $_SERVER['LOCAL_ADDR'];
+		$strServer = static::get('ServerAddr') ?: static::get('LocalAddr');
 
 		// Special workaround for Strato users
 		if (empty($strServer))
 		{
-			$strServer = @gethostbyname($_SERVER['SERVER_NAME']);
+			$strServer = @gethostbyname(static::get('ServerName'));
 		}
 
 		return $strServer;
@@ -481,7 +482,7 @@ class Environment
 	 */
 	protected static function isAjaxRequest()
 	{
-		return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
+		return static::getRequest()->isXmlHttpRequest();
 	}
 
 
@@ -624,5 +625,26 @@ class Environment
 		}
 
 		return static::$objInstance;
+	}
+
+
+	/**
+	 * Return Symfony Request from DIC or create from globals
+	 * @return  Request
+	 */
+	public static function getRequest()
+	{
+        static $globalRequest;
+    	global $container;
+
+        if (null === $container || ($request = $container->get('request_stack')->getCurrentRequest()) === null) {
+            if (null === $globalRequest) {
+                $globalRequest = Request::createFromGlobals();
+            }
+
+            $request = $globalRequest;
+        }
+
+        return $request;
 	}
 }
