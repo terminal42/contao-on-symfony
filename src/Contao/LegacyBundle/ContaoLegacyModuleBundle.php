@@ -15,8 +15,9 @@ namespace Contao\LegacyBundle;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Contao\Framework\DependentBundleInterface;
 
-class ContaoLegacyModuleBundle extends Bundle
+class ContaoLegacyModuleBundle extends Bundle implements DependentBundleInterface
 {
     protected $module;
     protected $rootDir;
@@ -34,5 +35,28 @@ class ContaoLegacyModuleBundle extends Bundle
 
     public function build(ContainerBuilder $container)
     {
+    }
+
+    public function getDependencies()
+    {
+        $dependencies = ($this->module == 'core') ? array('ContaoLegacyBundle') : array('ContaoLegacyCoreModuleBundle');
+        $file = $this->rootDir . '/system/modules/' . $this->module . '/config/autoload.ini';
+
+        // Read the autoload.ini if any
+        if (file_exists($file)) {
+            $config = parse_ini_file($file, true);
+
+            if (!empty($config['requires'])) {
+                foreach ($config['requires'] as $module) {
+                    if ($module == 'core') {
+                        continue;
+                    }
+
+                    $dependencies[] = 'ContaoLegacy' . Container::camelize($module) . 'ModuleBundle';
+                }
+            }
+        }
+
+        return $dependencies;
     }
 }
