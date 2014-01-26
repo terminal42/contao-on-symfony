@@ -31,6 +31,11 @@ class ContaoLegacyModuleBundle extends Bundle implements DependentBundleInterfac
 
     public function boot()
     {
+        $strFile = $this->rootDir . '/system/modules/' . $this->module . '/config/config.php';
+
+        if (file_exists($strFile)) {
+            include $strFile;
+        }
     }
 
     public function getDependencies()

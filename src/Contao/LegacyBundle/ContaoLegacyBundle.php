@@ -19,42 +19,8 @@ use Contao\Framework\DependentBundleInterface;
 
 class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
 {
-    /**
-     * Boots the Bundle.
-     */
-    public function boot()
-    {
-        $this->initialize($this->container);
 
-        // Make the Container globally available (legacy code)
-        $GLOBALS['container'] = $this->container;
-
-    }
-
-    /**
-     * Pass legacy Contao config to DIC before building the cache
-     *
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     */
-    public function build(ContainerBuilder $container)
-    {
-        // When building the cache, we must initialize Contao first
-        $this->initialize($container);
-
-        $container->setParameter('kernel.trusted_proxies', array_map('trim', explode(',', $GLOBALS['TL_CONFIG']['proxyServerIps'])));
-
-        // @todo check if secret is not publicly visible that way (because of CSRF protection)
-        $container->setParameter('kernel.secret', $GLOBALS['TL_CONFIG']['encryptionKey']);
-
-        if ($container->getParameter('kernel.charset') === '') {
-            $container->setParameter('kernel.charset', strtoupper($GLOBALS['TL_CONFIG']['characterSet']));
-        }
-    }
-
-    /**
-     * Initialize legacy Contao system if not already done
-     */
-    protected function initialize($container)
+    public function __construct($rootDir)
     {
         if (defined('TL_ROOT')) {
             return;
@@ -68,7 +34,7 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         define('TL_START', microtime(true));
 
         // Define the root path to the Contao installation
-        define('TL_ROOT', dirname($container->getParameter('kernel.root_dir')));
+        define('TL_ROOT', $rootDir);
 
         // Define the login status constants in the back end (see #4099, #5279)
         if (TL_MODE == 'BE') {
@@ -96,8 +62,7 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         @ini_set('error_log', TL_ROOT . '/system/logs/error.log');
 
         // Include some classes required for further processing
-        require TL_ROOT . '/system/modules/core/library/Contao/Config.php';
-        class_alias('Contao\\Config', 'Config');
+        ClassLoader::register();
 
         require TL_ROOT . '/system/modules/core/library/Contao/ClassLoader.php';
         class_alias('Contao\\ClassLoader', 'ClassLoader');
@@ -117,9 +82,6 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
             die($e->getMessage()); // see #6343
         }
 
-        // Initialize legacy class loader
-        ClassLoader::register();
-
         // Define the relative path to the installation (see #5339)
         if (file_exists(TL_ROOT . '/system/config/pathconfig.php')) {
             define('TL_PATH', include TL_ROOT . '/system/config/pathconfig.php');
@@ -138,6 +100,20 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         // Get the Config instance
         global $objConfig;
         $objConfig = \Config::getInstance();
+    }
+
+    /**
+     * Boots the Bundle.
+     */
+    public function boot()
+    {
+        // Make the Container globally available (legacy code)
+        $GLOBALS['container'] = $this->container;
+
+        // Include the custom initialization file
+        if (file_exists(TL_ROOT . '/system/config/localconfig.php')) {
+            include TL_ROOT . '/system/config/localconfig.php';
+        }
 
         // Initialize the Input and RequestToken class
         \Input::initialize();
@@ -162,6 +138,7 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         }
 
         // Show the "incomplete installation" message
+        global $objConfig;
         if (!$objConfig->isComplete() && \Environment::get('script') != 'contao/install.php') {
             die_nicely('be_incomplete', 'The installation has not been completed. Open the Contao install tool to continue.');
         }
@@ -229,6 +206,23 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
             }
 
             exit;
+        }
+    }
+
+    /**
+     * Pass legacy Contao config to DIC before building the cache
+     *
+     * @param ContainerBuilder $container A ContainerBuilder instance
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->setParameter('kernel.trusted_proxies', array_map('trim', explode(',', $GLOBALS['TL_CONFIG']['proxyServerIps'])));
+
+        // @todo check if secret is not publicly visible that way (because of CSRF protection)
+        $container->setParameter('kernel.secret', $GLOBALS['TL_CONFIG']['encryptionKey']);
+
+        if ($container->getParameter('kernel.charset') === '') {
+            $container->setParameter('kernel.charset', strtoupper($GLOBALS['TL_CONFIG']['characterSet']));
         }
     }
 

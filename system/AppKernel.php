@@ -20,7 +20,7 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new Contao\LegacyBundle\ContaoLegacyBundle(),
+            new Contao\LegacyBundle\ContaoLegacyBundle(dirname($this->getRootDir())),
             new Contao\LegacyBundle\ContaoLegacyModuleBundle('calendar', dirname($this->getRootDir())),
             new Contao\LegacyBundle\ContaoLegacyModuleBundle('comments', dirname($this->getRootDir())),
             new Contao\LegacyBundle\ContaoLegacyModuleBundle('core', dirname($this->getRootDir())),
