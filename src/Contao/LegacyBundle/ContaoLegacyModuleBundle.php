@@ -33,10 +33,6 @@ class ContaoLegacyModuleBundle extends Bundle implements DependentBundleInterfac
     {
     }
 
-    public function build(ContainerBuilder $container)
-    {
-    }
-
     public function getDependencies()
     {
         if ($this->module == 'core') {

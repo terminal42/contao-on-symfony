@@ -18,8 +18,6 @@ class LegacyLoader extends Loader
 
     public function load($resource, $type = null)
     {
-        $config = $this->container->getParameter('contao_legacy.config');
-
         $pattern = '/{alias}';
         $defaults = array(
             '_controller' => 'ContaoLegacyBundle:Frontend:index',
@@ -28,13 +26,13 @@ class LegacyLoader extends Loader
             'alias' => '.*',
         );
 
-        if ($config['urlSuffix'] != '') {
+        if ($GLOBALS['TL_CONFIG']['urlSuffix'] != '') {
             $pattern .= '.{_format}';
-            $requirements['_format'] = substr($config['urlSuffix'], 1);
+            $requirements['_format'] = substr($GLOBALS['TL_CONFIG']['urlSuffix'], 1);
             $defaults['_format'] = substr($config['urlSuffix'], 1);
         }
 
-        if ($config['addLanguageToUrl']) {
+        if ($GLOBALS['TL_CONFIG']['addLanguageToUrl']) {
             $pattern = '/{_locale}' . $pattern;
         }
 

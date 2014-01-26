@@ -29,13 +29,6 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         // Make the Container globally available (legacy code)
         $GLOBALS['container'] = $this->container;
 
-        if (is_array($config = $this->container->getParameter('contao_legacy.config'))) {
-            if (is_array($GLOBALS['TL_CONFIG'])) {
-                $GLOBALS['TL_CONFIG'] = array_merge($GLOBALS['TL_CONFIG'], $config);
-            } else {
-                $GLOBALS['TL_CONFIG'] = $config;
-            }
-        }
     }
 
     /**
@@ -56,9 +49,6 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         if ($container->getParameter('kernel.charset') === '') {
             $container->setParameter('kernel.charset', strtoupper($GLOBALS['TL_CONFIG']['characterSet']));
         }
-
-        // Cache config config in DIC so it can be set on boot
-        $container->setParameter('contao_legacy.config', $GLOBALS['TL_CONFIG']);
     }
 
     /**
