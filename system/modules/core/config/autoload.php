@@ -117,6 +117,7 @@ ClassLoader::addClasses(array
 	'Contao\DcaExtractor'              => 'system/modules/core/library/Contao/DcaExtractor.php',
 	'Contao\Email'                     => 'system/modules/core/library/Contao/Email.php',
 	'Contao\Encryption'                => 'system/modules/core/library/Contao/Encryption.php',
+	'Contao\Environment'               => 'system/modules/core/library/Contao/Environment.php',
 	'Contao\Feed'                      => 'system/modules/core/library/Contao/Feed.php',
 	'Contao\FeedItem'                  => 'system/modules/core/library/Contao/FeedItem.php',
 	'Contao\File'                      => 'system/modules/core/library/Contao/File.php',
