@@ -190,7 +190,7 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         if (TL_PATH !== null && !file_exists(TL_ROOT . '/system/config/pathconfig.php')) {
             if (is_writable(TL_ROOT . '/system/tmp') && file_exists(TL_ROOT . '/system/config/localconfig.php')) {
                 try {
-                    $objFile = new File('system/config/pathconfig.php', true);
+                    $objFile = new \File('system/config/pathconfig.php', true);
                     $objFile->write("<?php\n\n// Relative path to the installation\nreturn '" . TL_PATH . "';\n");
                     $objFile->close();
                 } catch (Exception $e) {
