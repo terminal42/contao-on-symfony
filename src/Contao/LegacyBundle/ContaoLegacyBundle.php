@@ -12,6 +12,7 @@
 
 namespace Contao\LegacyBundle;
 
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Contao\Framework\DependentBundleInterface;
@@ -244,6 +245,12 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
 
     public function getDependencies()
     {
-        return array('FrameworkBundle');
+        $dependencies = array('FrameworkBundle');
+
+        foreach (\ModuleLoader::getActive() as $module) {
+            $dependencies[] = 'ContaoLegacy' . Container::camelize($module) . 'ModuleBundle';
+        }
+
+        return $dependencies;
     }
 }

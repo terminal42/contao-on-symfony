@@ -39,7 +39,11 @@ class ContaoLegacyModuleBundle extends Bundle implements DependentBundleInterfac
 
     public function getDependencies()
     {
-        $dependencies = ($this->module == 'core') ? array('ContaoLegacyBundle') : array('ContaoLegacyCoreModuleBundle');
+        if ($this->module == 'core') {
+            return array();
+        }
+
+        $dependencies = array('ContaoLegacyCoreModuleBundle');
         $file = $this->rootDir . '/system/modules/' . $this->module . '/config/autoload.ini';
 
         // Read the autoload.ini if any
