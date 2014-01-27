@@ -4,7 +4,7 @@ namespace Contao\LegacyBundle\EventListener;
 
 use Contao\LegacyBundle\Event\LoadDataContainerEvent;
 
-class LegacyListener
+class LegacyHookListener
 {
 
     public function onLoadDataContainerEvent(LoadDataContainerEvent $event)
