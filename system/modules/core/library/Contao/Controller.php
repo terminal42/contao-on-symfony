@@ -2350,35 +2350,10 @@ abstract class Controller extends \System
 		}
 
 		$GLOBALS['loadDataContainer'][$strName] = true; // see #6145
-		$strCacheFile = 'system/cache/dca/' . $strName . '.php';
-
-		// Try to load from cache
-		if (!$GLOBALS['TL_CONFIG']['bypassCache'] && file_exists(TL_ROOT . '/' . $strCacheFile))
-		{
-			include TL_ROOT . '/' . $strCacheFile;
-		}
-		else
-		{
-			foreach (\ModuleLoader::getActive() as $strModule)
-			{
-				$strFile = 'system/modules/' . $strModule . '/dca/' . $strName . '.php';
-
-				if (file_exists(TL_ROOT . '/' . $strFile))
-				{
-					include TL_ROOT . '/' . $strFile;
-				}
-			}
-		}
 
         global $container;
         $event = new LoadDataContainerEvent($strName);
         $container->get('event_dispatcher')->dispatch('contao_legacy.load_data_container', $event);
-
-		// Local configuration file
-		if (file_exists(TL_ROOT . '/system/config/dcaconfig.php'))
-		{
-			include TL_ROOT . '/system/config/dcaconfig.php';
-		}
 	}
 
 

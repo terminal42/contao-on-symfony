@@ -14,6 +14,7 @@ namespace Contao\LegacyBundle;
 
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Contao\Framework\DependentBundleInterface;
 
@@ -36,6 +37,15 @@ class ContaoLegacyModuleBundle extends Bundle implements DependentBundleInterfac
         if (file_exists($strFile)) {
             include $strFile;
         }
+    }
+
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $definition= new Definition('Contao\LegacyBundle\EventListener\LegacyModuleListener', array($this->module, $this->rootDir));
+        $definition->addTag('kernel.event_listener', array('event'=>'contao_legacy.load_data_container', 'method'=>'onLoadDataContainerEvent'));
+        $container->setDefinition('contao_legacy.'.$this->module.'_module_listener', $definition);
     }
 
     public function getDependencies()
