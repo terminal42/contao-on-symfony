@@ -238,7 +238,7 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         $dependencies = array('FrameworkBundle');
 
         foreach (\ModuleLoader::getActive() as $module) {
-            $dependencies[] = 'ContaoLegacy' . Container::camelize($module) . 'ModuleBundle';
+            $dependencies[] = 'ContaoLegacy' . Container::camelize($module) . 'Module';
         }
 
         return $dependencies;

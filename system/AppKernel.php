@@ -20,15 +20,15 @@ class AppKernel extends Kernel
         $bundles = array(
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Contao\LegacyBundle\ContaoLegacyBundle(dirname($this->getRootDir())),
-            new Contao\LegacyBundle\ContaoLegacyModuleBundle('calendar', dirname($this->getRootDir())),
-            new Contao\LegacyBundle\ContaoLegacyModuleBundle('comments', dirname($this->getRootDir())),
-            new Contao\LegacyBundle\ContaoLegacyModuleBundle('core', dirname($this->getRootDir())),
-            new Contao\LegacyBundle\ContaoLegacyModuleBundle('devtools', dirname($this->getRootDir())),
-            new Contao\LegacyBundle\ContaoLegacyModuleBundle('faq', dirname($this->getRootDir())),
-            new Contao\LegacyBundle\ContaoLegacyModuleBundle('listing', dirname($this->getRootDir())),
-            new Contao\LegacyBundle\ContaoLegacyModuleBundle('news', dirname($this->getRootDir())),
-            new Contao\LegacyBundle\ContaoLegacyModuleBundle('newsletter', dirname($this->getRootDir())),
-            new Contao\LegacyBundle\ContaoLegacyModuleBundle('repository', dirname($this->getRootDir())),
+            new Contao\LegacyBundle\ContaoLegacyModule('calendar', dirname($this->getRootDir())),
+            new Contao\LegacyBundle\ContaoLegacyModule('comments', dirname($this->getRootDir())),
+            new Contao\LegacyBundle\ContaoLegacyModule('core', dirname($this->getRootDir())),
+            new Contao\LegacyBundle\ContaoLegacyModule('devtools', dirname($this->getRootDir())),
+            new Contao\LegacyBundle\ContaoLegacyModule('faq', dirname($this->getRootDir())),
+            new Contao\LegacyBundle\ContaoLegacyModule('listing', dirname($this->getRootDir())),
+            new Contao\LegacyBundle\ContaoLegacyModule('news', dirname($this->getRootDir())),
+            new Contao\LegacyBundle\ContaoLegacyModule('newsletter', dirname($this->getRootDir())),
+            new Contao\LegacyBundle\ContaoLegacyModule('repository', dirname($this->getRootDir())),
         );
 
         return $bundles;

@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Contao\Framework\DependentBundleInterface;
 
-class ContaoLegacyModuleBundle extends Bundle implements DependentBundleInterface
+class ContaoLegacyModule extends Bundle implements DependentBundleInterface
 {
     protected $module;
     protected $rootDir;
@@ -27,7 +27,7 @@ class ContaoLegacyModuleBundle extends Bundle implements DependentBundleInterfac
     {
         $this->module = $module;
         $this->rootDir = $rootDir;
-        $this->name = 'ContaoLegacy' . Container::camelize($module) . 'ModuleBundle';
+        $this->name = 'ContaoLegacy' . Container::camelize($module) . 'Module';
     }
 
     public function boot()
@@ -54,7 +54,7 @@ class ContaoLegacyModuleBundle extends Bundle implements DependentBundleInterfac
             return array();
         }
 
-        $dependencies = array('ContaoLegacyCoreModuleBundle');
+        $dependencies = array('ContaoLegacyCoreModule');
         $file = $this->rootDir . '/system/modules/' . $this->module . '/config/autoload.ini';
 
         // Read the autoload.ini if any
@@ -67,7 +67,7 @@ class ContaoLegacyModuleBundle extends Bundle implements DependentBundleInterfac
                         continue;
                     }
 
-                    $dependencies[] = 'ContaoLegacy' . Container::camelize($module) . 'ModuleBundle';
+                    $dependencies[] = 'ContaoLegacy' . Container::camelize($module) . 'Module';
                 }
             }
         }
