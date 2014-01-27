@@ -44,7 +44,6 @@ class FrontendController extends \Frontend implements ContainerAwareInterface
 
         // Load the user object before calling the parent constructor
         $this->import('FrontendUser', 'User');
-        parent::__construct();
 
         // Check whether a user is logged in
         define('BE_USER_LOGGED_IN', $this->getLoginStatus('BE_USER_AUTH'));
