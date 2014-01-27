@@ -12,6 +12,7 @@
 
 namespace Contao;
 
+use Contao\LegacyBundle\Event\IsVisibleElementEvent;
 use Contao\LegacyBundle\Event\LoadDataContainerEvent;
 
 /**
@@ -658,13 +659,10 @@ abstract class Controller extends \System
 		}
 
 		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['isVisibleElement']) && is_array($GLOBALS['TL_HOOKS']['isVisibleElement']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['isVisibleElement'] as $callback)
-			{
-				$blnReturn = static::importStatic($callback[0])->$callback[1]($objElement, $objReturn);
-			}
-		}
+        global $container;
+        $event = new IsVisibleElementEvent($objElement, $blnReturn);
+        $container->get('event_dispatcher')->dispatch('contao_legacy.is_visible_element', $event);
+        $blnReturn = $event->isVisible();
 
 		return $blnReturn;
 	}

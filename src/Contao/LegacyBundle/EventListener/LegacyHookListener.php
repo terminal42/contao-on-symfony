@@ -2,6 +2,7 @@
 
 namespace Contao\LegacyBundle\EventListener;
 
+use Contao\LegacyBundle\Event\IsVisibleElementEvent;
 use Contao\LegacyBundle\Event\LoadDataContainerEvent;
 
 class LegacyHookListener extends \Controller
@@ -28,6 +29,22 @@ class LegacyHookListener extends \Controller
         if (file_exists(TL_ROOT . '/system/config/dcaconfig.php'))
         {
             include TL_ROOT . '/system/config/dcaconfig.php';
+        }
+    }
+
+    public function onIsVisibleElementEvent(IsVisibleElementEvent $event)
+    {
+        if (isset($GLOBALS['TL_HOOKS']['isVisibleElement']) && is_array($GLOBALS['TL_HOOKS']['isVisibleElement']))
+        {
+            $blnReturn = $event->isVisible();
+            $objElement = $event->getElement();
+
+            foreach ($GLOBALS['TL_HOOKS']['isVisibleElement'] as $callback)
+            {
+                $blnReturn = static::importStatic($callback[0])->$callback[1]($objElement, $blnReturn);
+            }
+
+            $event->setIsVisible($blnReturn);
         }
     }
 }

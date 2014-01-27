@@ -10,6 +10,7 @@
         </service>
         <service id="contao_legacy.hook_listener" class="Contao\LegacyBundle\EventListener\LegacyHookListener">
             <tag name="kernel.event_listener" event="contao_legacy.load_data_container" method="onLoadDataContainerEvent" />
+            <tag name="kernel.event_listener" event="contao_legacy.is_visible_element" method="onIsVisibleElementEvent" />
         </service>
     </services>
 </container>
