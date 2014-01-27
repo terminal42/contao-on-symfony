@@ -62,7 +62,8 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         @ini_set('error_log', TL_ROOT . '/system/logs/error.log');
 
         // Include some classes required for further processing
-        ClassLoader::register();
+        require TL_ROOT . '/system/modules/core/library/Contao/Config.php';
+        class_alias('Contao\\Config', 'Config');
 
         require TL_ROOT . '/system/modules/core/library/Contao/ClassLoader.php';
         class_alias('Contao\\ClassLoader', 'ClassLoader');
