@@ -12,6 +12,7 @@
 
 namespace Contao;
 
+use Contao\LegacyBundle\Event\LoadDataContainerEvent;
 
 /**
  * Abstract parent class for Controllers
@@ -2369,15 +2370,9 @@ abstract class Controller extends \System
 			}
 		}
 
-		// HOOK: allow to load custom settings
-		if (isset($GLOBALS['TL_HOOKS']['loadDataContainer']) && is_array($GLOBALS['TL_HOOKS']['loadDataContainer']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['loadDataContainer'] as $callback)
-			{
-				$this->import($callback[0]);
-				$this->$callback[0]->$callback[1]($strName);
-			}
-		}
+        global $container;
+        $event = new LoadDataContainerEvent($strName);
+        $container->get('event_dispatcher')->dispatch('contao_legacy.load_data_container', $event);
 
 		// Local configuration file
 		if (file_exists(TL_ROOT . '/system/config/dcaconfig.php'))
