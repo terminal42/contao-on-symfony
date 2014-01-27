@@ -18,11 +18,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Contao\Framework\DependentBundleInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
 {
 
-    public function __construct($rootDir)
+    public function __construct(KernelInterface $kernel)
     {
         if (defined('TL_ROOT')) {
             return;
@@ -36,7 +37,7 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         define('TL_START', microtime(true));
 
         // Define the root path to the Contao installation
-        define('TL_ROOT', $rootDir);
+        define('TL_ROOT', dirname($kernel->getRootDir()));
 
         // Define the login status constants in the back end (see #4099, #5279)
         if (TL_MODE == 'BE') {
