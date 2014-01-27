@@ -3,10 +3,39 @@
 namespace Contao\Framework;
 
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+use Symfony\Component\Finder\Finder;
 use Contao\Framework\Exception\UnresolvableDependenciesException;
 
 abstract class Kernel extends BaseKernel
 {
+
+    public function registerBundles()
+    {
+        $bundles = array();
+
+        $root = dirname($this->getRootDir());
+        $finder = new Finder();
+        $finder->files()->name('*Bundle.php')->in(array($root.'/src', $root.'/vendor'))->exclude('Tests');
+
+        foreach ($finder as $file) {
+            $class = str_replace(array($root.'/src/', $root.'/vendor/', '.php'), '', $file->getRealPath());
+            $class = str_replace('/', '\\', $class);
+
+            while (strpos($class, '\\') !== false) {
+                if (class_exists($class)) {
+                    $reflection = new \ReflectionClass($class);
+                    if (!$reflection->isAbstract()) {
+                        $bundles[] = new $class($this);
+                    }
+
+                    continue(2);
+                }
+                $class = substr($class, strpos($class, '\\')+1);
+            }
+        }
+
+        return $bundles;
+    }
 
     public function initializeBundles()
     {
