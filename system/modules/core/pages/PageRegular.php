@@ -38,6 +38,13 @@ class PageRegular extends \Frontend
 		$GLOBALS['TL_KEYWORDS'] = '';
 		$GLOBALS['TL_LANGUAGE'] = $objPage->language;
 
+        // Set Symfony2 locale to page language
+        global $container;
+        $requestStack = $container->get('request_stack');
+        if (($request = $requestStack->getCurrentRequest()) !== null) {
+            $request->setLocale($objPage->language);
+        }
+
 		\System::loadLanguageFile('default');
 
 		// Static URLs
