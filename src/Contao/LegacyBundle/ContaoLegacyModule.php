@@ -51,7 +51,7 @@ class ContaoLegacyModule extends Bundle implements DependentBundleInterface
     public function getDependencies()
     {
         if ($this->module == 'core') {
-            return array();
+            return array('FrameworkBundle');
         }
 
         $dependencies = array('ContaoLegacyCoreModule');
