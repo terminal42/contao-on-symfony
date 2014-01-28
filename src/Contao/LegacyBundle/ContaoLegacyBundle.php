@@ -12,10 +12,8 @@
 
 namespace Contao\LegacyBundle;
 
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Contao\Framework\DependentBundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -220,9 +218,6 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
      */
     public function build(ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/Resources/config'));
-        $loader->load('services.xml');
-
         $container->setParameter('kernel.trusted_proxies', array_map('trim', explode(',', $GLOBALS['TL_CONFIG']['proxyServerIps'])));
 
         // @todo check if secret is not publicly visible that way (because of CSRF protection)
