@@ -28,7 +28,6 @@ class ContaoLegacyModule extends Bundle implements DependentBundleInterface
         $this->module = $module;
         $this->rootDir = $rootDir;
         $this->name = 'ContaoLegacy' . Container::camelize($module) . 'Module';
-        $this->extension = new ContaoLegacyModuleExtension($module, $rootDir);
     }
 
     public function boot()

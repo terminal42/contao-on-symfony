@@ -24,12 +24,6 @@ class LegacyHookListener extends \Controller
                 $this->$callback[0]->$callback[1]($event->getDataContainer());
             }
         }
-
-        // Local configuration file
-        if (file_exists(TL_ROOT . '/system/config/dcaconfig.php'))
-        {
-            include TL_ROOT . '/system/config/dcaconfig.php';
-        }
     }
 
     public function onIsVisibleElementEvent(IsVisibleElementEvent $event)
