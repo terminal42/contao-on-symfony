@@ -50,24 +50,24 @@ abstract class Kernel extends BaseKernel
 
         // Resolve the dependencies
         while (!empty($dependencies)) {
-            $matched = false;
+            $failed = true;
 
             foreach ($dependencies as $name => $requires) {
                 if (empty($requires)) {
-                    $matched = true;
+                    $resolved = true;
                 } else {
-                    $matched = count(array_diff($requires, $active)) === 0;
+                    $resolved = count(array_diff($requires, $active)) === 0;
                 }
 
-                if ($matched === true) {
+                if ($resolved === true) {
                     unset($dependencies[$name]);
                     $active[] = $name;
-                    continue(2);
+                    $failed = false;
                 }
             }
 
             // The dependencies cannot be resolved
-            if ($matched === false) {
+            if ($failed === true) {
                 throw new UnresolvableDependenciesException("The module dependencies could not be resolved.\n".print_r($dependencies, true));
             }
         }
