@@ -13,6 +13,7 @@
 namespace Contao\LegacyBundle;
 
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Contao\Framework\DependentBundleInterface;
 use Contao\LegacyBundle\DependencyInjection\ContaoLegacyModuleExtension;
@@ -32,10 +33,33 @@ class ContaoLegacyModule extends Bundle implements DependentBundleInterface
 
     public function boot()
     {
-        $strFile = $this->rootDir . '/system/modules/' . $this->module . '/config/config.php';
+        $path = $this->rootDir . '/system/modules/' . $this->module;
+        $strFile = $path . '/config/config.php';
 
         if (file_exists($strFile)) {
             include $strFile;
+        }
+
+        // Find and register language files
+        $finder = new Finder();
+        $translator = $this->container->get('translator');
+
+        $finder->files()->in($path.'/languages');
+
+        foreach ($finder as $file) {
+            $locale = basename(dirname($file->getRealPath()));
+            $extension = $file->getExtension();
+            $domain = $file->getBasename('.'.$extension);
+
+            if ($domain == 'default') {
+                $domain = 'messages';
+            }
+
+            if ($extension == 'php') {
+                $translator->addResource('contao_legacy_php', $file->getRealPath(), $locale, $domain);
+            } elseif ($extension == 'xlf') {
+                $translator->addResource('contao_legacy_xlf', $file->getRealPath(), $locale, $domain);
+            }
         }
     }
 
