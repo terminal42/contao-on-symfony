@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2013 Leo Feyer
+ * Copyright (c) 2005-2014 Leo Feyer
  *
  * @package Library
  * @link    https://contao.org
@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @package   Library
  * @author    Leo Feyer <https://github.com/leofeyer>
- * @copyright Leo Feyer 2005-2013
+ * @copyright Leo Feyer 2005-2014
  */
 class Environment
 {
@@ -516,6 +516,12 @@ class Environment
 			}
 		}
 
+		// Android tablets are not mobile (see #4150)
+		if ($os == 'android' && stripos($ua, 'mobile') === false)
+		{
+			$mobile = false;
+		}
+
 		$return->os = $os;
 
 		// Browser and version
@@ -546,12 +552,6 @@ class Environment
 		if ($mobile)
 		{
 			$return->class .= ' mobile';
-		}
-
-		// Android tablets are not mobile (see #4150)
-		if ($os == 'android' && stripos($ua, 'mobile') === false)
-		{
-			$mobile = false;
 		}
 
 		$return->browser  = $browser;
