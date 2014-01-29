@@ -8,12 +8,6 @@
             <argument type="service" id="service_container" />
             <tag name="routing.loader" />
         </service>
-        <service id="contao_legacy.translation_loader" class="Contao\LegacyBundle\Translation\LegacyPhpFileLoader">
-            <tag name="translation.loader" alias="contao_legacy_php" />
-        </service>
-        <service id="contao_legacy.translation_loader" class="Contao\LegacyBundle\Translation\LegacyXliffFileLoader">
-            <tag name="translation.loader" alias="contao_legacy_xlf" />
-        </service>
         <service id="contao_legacy.hook_listener" class="Contao\LegacyBundle\EventListener\LegacyHookListener">
             <tag name="kernel.event_listener" event="contao_legacy.load_data_container" method="onLoadDataContainerEvent" />
             <tag name="kernel.event_listener" event="contao_legacy.is_visible_element" method="onIsVisibleElementEvent" />
