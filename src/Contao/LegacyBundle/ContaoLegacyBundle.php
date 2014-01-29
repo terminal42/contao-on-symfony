@@ -124,7 +124,7 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         // Set the default language
         if (!isset($_SESSION['TL_LANGUAGE'])) {
             // Check the user languages
-            $langs = Environment::get('httpAcceptLanguage');
+            $langs = \Environment::get('httpAcceptLanguage');
             array_push($langs, 'en'); // see #6533
 
             foreach ($langs as $lang) {

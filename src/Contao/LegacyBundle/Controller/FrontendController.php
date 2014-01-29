@@ -133,7 +133,7 @@ class FrontendController extends \Frontend implements ContainerAwareInterface
                 $objNewPage = current($arrLangs);
             }
             // Try to find a page matching the language parameter
-            elseif (($lang = Input::get('language')) != '' && isset($arrLangs[$lang]))
+            elseif (($lang = \Input::get('language')) != '' && isset($arrLangs[$lang]))
             {
                 $objNewPage = $arrLangs[$lang];
             }
@@ -194,7 +194,7 @@ class FrontendController extends \Frontend implements ContainerAwareInterface
         }
 
         // Check wether the language matches the root page language
-        if ($GLOBALS['TL_CONFIG']['addLanguageToUrl'] && Input::get('language') != $objPage->rootLanguage)
+        if ($GLOBALS['TL_CONFIG']['addLanguageToUrl'] && \Input::get('language') != $objPage->rootLanguage)
         {
             $this->User->authenticate();
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
@@ -315,7 +315,7 @@ class FrontendController extends \Frontend implements ContainerAwareInterface
         $strCacheFile = null;
 
         // Check for a mobile layout
-        if (Input::cookie('TL_VIEW') == 'mobile' || (Environment::get('agent')->mobile && Input::cookie('TL_VIEW') != 'desktop'))
+        if (\Input::cookie('TL_VIEW') == 'mobile' || (\Environment::get('agent')->mobile && \Input::cookie('TL_VIEW') != 'desktop'))
         {
             $strCacheKey = md5($strCacheKey . '.mobile');
             $strCacheFile = TL_ROOT . '/system/cache/html/' . substr($strCacheKey, 0, 1) . '/' . $strCacheKey . '.html';
