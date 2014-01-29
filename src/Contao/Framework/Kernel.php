@@ -24,7 +24,7 @@ abstract class Kernel extends BaseKernel
             while (strpos($class, '\\') !== false) {
                 if (class_exists($class)) {
                     $reflection = new \ReflectionClass($class);
-                    if (!$reflection->isAbstract()) {
+                    if (!$reflection->isInstantiable()) {
                         $bundles[] = new $class($this);
                     }
 
