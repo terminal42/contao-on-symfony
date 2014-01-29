@@ -127,6 +127,31 @@ class Config
 		}
 
 		$strCacheFile = 'system/cache/config/config.php';
+
+		// Try to load from cache
+		if (!$GLOBALS['TL_CONFIG']['bypassCache'] && file_exists(TL_ROOT . '/' . $strCacheFile))
+		{
+			include TL_ROOT . '/' . $strCacheFile;
+		}
+		else
+		{
+			// Get the module configuration files
+			foreach (\ModuleLoader::getActive() as $strModule)
+			{
+				$strFile = TL_ROOT . '/system/modules/' . $strModule . '/config/config.php';
+
+				if (file_exists($strFile))
+				{
+					include $strFile;
+				}
+			}
+		}
+
+		// // Include the local configuration file again
+		if (static::$blnHasLcf)
+		{
+			include TL_ROOT . '/system/config/localconfig.php';
+		}
 	}
 
 

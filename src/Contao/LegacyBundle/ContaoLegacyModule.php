@@ -28,16 +28,6 @@ class ContaoLegacyModule extends Bundle implements DependentBundleInterface
         $this->name = 'ContaoLegacy' . Container::camelize($module) . 'Module';
     }
 
-    public function boot()
-    {
-        $path = $this->rootDir . '/system/modules/' . $this->module;
-        $strFile = $path . '/config/config.php';
-
-        if (file_exists($strFile)) {
-            include $strFile;
-        }
-    }
-
     public function getDependencies()
     {
         if ($this->module == 'core') {

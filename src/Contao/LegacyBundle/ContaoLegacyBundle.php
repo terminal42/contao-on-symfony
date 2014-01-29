@@ -112,11 +112,6 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         // Make the Container globally available (legacy code)
         $GLOBALS['container'] = $this->container;
 
-        // Include the custom initialization file
-        if (file_exists(TL_ROOT . '/system/config/localconfig.php')) {
-            include TL_ROOT . '/system/config/localconfig.php';
-        }
-
         // Initialize the Input and RequestToken class
         \Input::initialize();
         \RequestToken::initialize();
