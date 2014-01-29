@@ -122,22 +122,22 @@ class ContaoLegacyBundle extends Bundle implements DependentBundleInterface
         \RequestToken::initialize();
 
         // Set the default language
-        if (\Input::post('language') && \Input::post('FORM_SUBMIT') != 'tl_filters') {
-            $GLOBALS['TL_LANGUAGE'] = str_replace('_', '-', \Input::post('language'));
-            $_SESSION['TL_LANGUAGE'] = $GLOBALS['TL_LANGUAGE'];
-        } elseif (isset($_SESSION['TL_LANGUAGE'])) {
-            $GLOBALS['TL_LANGUAGE'] = $_SESSION['TL_LANGUAGE'];
-        } else {
-            foreach (\Environment::get('httpAcceptLanguage') as $v) {
-                if (is_dir(TL_ROOT . '/system/modules/core/languages/' . str_replace('-', '_', $v))) {
-                    $GLOBALS['TL_LANGUAGE'] = $v;
-                    $_SESSION['TL_LANGUAGE'] = $v;
+        if (!isset($_SESSION['TL_LANGUAGE'])) {
+            // Check the user languages
+            $langs = Environment::get('httpAcceptLanguage');
+            array_push($langs, 'en'); // see #6533
+
+            foreach ($langs as $lang) {
+                if (is_dir(TL_ROOT . '/system/modules/core/languages/' . str_replace('-', '_', $lang))) {
+                    $_SESSION['TL_LANGUAGE'] = $lang;
                     break;
                 }
             }
 
-            unset($v);
+            unset($langs, $lang);
         }
+
+        $GLOBALS['TL_LANGUAGE'] = $_SESSION['TL_LANGUAGE'];
 
         // Show the "incomplete installation" message
         global $objConfig;

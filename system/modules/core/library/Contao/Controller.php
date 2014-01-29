@@ -3,7 +3,7 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2013 Leo Feyer
+ * Copyright (c) 2005-2014 Leo Feyer
  *
  * @package Library
  * @link    https://contao.org
@@ -34,7 +34,7 @@ use Contao\LegacyBundle\Event\LoadDataContainerEvent;
  *
  * @package   Library
  * @author    Leo Feyer <https://github.com/leofeyer>
- * @copyright Leo Feyer 2005-2013
+ * @copyright Leo Feyer 2005-2014
  */
 abstract class Controller extends \System
 {
@@ -206,15 +206,7 @@ abstract class Controller extends \System
 					}
 
 					// Add the "first" and "last" classes (see #2583)
-					$arrCss = deserialize($objArticle->cssID);
-
-					if (!is_array($arrCss))
-					{
-						$arrCss = array('', '');
-					}
-
-					$arrCss[1] .= 'first last';
-					$objArticle->cssID = serialize($arrCss);
+					$objArticle->classes = array('first', 'last');
 
 					return $this->getArticle($objArticle);
 				}
@@ -246,36 +238,19 @@ abstract class Controller extends \System
 				// Add the "first" and "last" classes (see #2583)
 				if ($intCount == 0 || $intCount == $intLast)
 				{
-					$arrCss = deserialize($objRow->cssID);
-					$arrTeaserCss = deserialize($objRow->teaserCssID);
-
-					if (!is_array($arrCss))
-					{
-						$arrCss = array('', '');
-					}
-
-					if (!is_array($arrTeaserCss))
-					{
-						$arrTeaserCss = array('', '');
-					}
+					$arrCss = array();
 
 					if ($intCount == 0)
 					{
-						$arrCss[1] .= ' first';
-						$arrTeaserCss[1] .= ' first';
+						$arrCss[] = 'first';
 					}
 
 					if ($intCount == $intLast)
 					{
-						$arrCss[1] .= ' last';
-						$arrTeaserCss[1] .= ' last';
+						$arrCss[] = 'last';
 					}
 
-					$arrCss[1] = trim($arrCss[1]);
-					$objRow->cssID = serialize($arrCss);
-
-					$arrTeaserCss[1] = trim($arrTeaserCss[1]);
-					$objRow->teaserCssID = serialize($arrTeaserCss);
+					$objRow->classes = $arrCss;
 				}
 
 				$return .= $this->getArticle($objRow, $blnMultiMode, false, $strColumn);
@@ -875,6 +850,8 @@ abstract class Controller extends \System
 				case 'link_open':
 				case 'link_url':
 				case 'link_title':
+					$strTarget = null;
+
 					// Back link
 					if ($elements[1] == 'back')
 					{
@@ -1090,7 +1067,7 @@ abstract class Controller extends \System
 						break;
 					}
 
-					$strUrl = $this->generateFrontendUrl($objJumpTo->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ?  '/' : '/items/') . ((!$GLOBALS['TL_CONFIG']['disableAlias'] && $objFaq->alias != '') ? $objFaq->alias : $objFaq->id));
+					$strUrl = $this->generateFrontendUrl($objJumpTo->row(), (($GLOBALS['TL_CONFIG']['useAutoItem'] && !$GLOBALS['TL_CONFIG']['disableAlias']) ?  '/' : '/items/') . ((!$GLOBALS['TL_CONFIG']['disableAlias'] && $objFaq->alias != '') ? $objFaq->alias : $objFaq->id));
 
 					// Replace the tag
 					switch (strtolower($elements[0]))
@@ -1124,6 +1101,8 @@ abstract class Controller extends \System
 						break;
 					}
 
+					$strUrl = '';
+
 					if ($objNews->source == 'external')
 					{
 						$strUrl = $objNews->url;
@@ -1146,7 +1125,7 @@ abstract class Controller extends \System
 					{
 						if (($objArchive = $objNews->getRelated('pid')) !== null && ($objJumpTo = $objArchive->getRelated('jumpTo')) !== null)
 						{
-							$strUrl = $this->generateFrontendUrl($objJumpTo->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ?  '/' : '/items/') . ((!$GLOBALS['TL_CONFIG']['disableAlias'] && $objNews->alias != '') ? $objNews->alias : $objNews->id));
+							$strUrl = $this->generateFrontendUrl($objJumpTo->row(), (($GLOBALS['TL_CONFIG']['useAutoItem'] && !$GLOBALS['TL_CONFIG']['disableAlias']) ?  '/' : '/items/') . ((!$GLOBALS['TL_CONFIG']['disableAlias'] && $objNews->alias != '') ? $objNews->alias : $objNews->id));
 						}
 					}
 
@@ -1182,6 +1161,8 @@ abstract class Controller extends \System
 						break;
 					}
 
+					$strUrl = '';
+
 					if ($objEvent->source == 'external')
 					{
 						$strUrl = $objEvent->url;
@@ -1204,7 +1185,7 @@ abstract class Controller extends \System
 					{
 						if (($objCalendar = $objEvent->getRelated('pid')) !== null && ($objJumpTo = $objCalendar->getRelated('jumpTo')) !== null)
 						{
-							$strUrl = $this->generateFrontendUrl($objJumpTo->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ?  '/' : '/events/') . ((!$GLOBALS['TL_CONFIG']['disableAlias'] && $objEvent->alias != '') ? $objEvent->alias : $objEvent->id));
+							$strUrl = $this->generateFrontendUrl($objJumpTo->row(), (($GLOBALS['TL_CONFIG']['useAutoItem'] && !$GLOBALS['TL_CONFIG']['disableAlias']) ?  '/' : '/events/') . ((!$GLOBALS['TL_CONFIG']['disableAlias'] && $objEvent->alias != '') ? $objEvent->alias : $objEvent->id));
 						}
 					}
 
@@ -1339,18 +1320,12 @@ abstract class Controller extends \System
 					$arrCache[$strTag] = \Input::post($elements[1]);
 					break;
 
-				// Mobile/desktop toggle (hide if there is no mobile layout)
+				// Mobile/desktop toggle (see #6469)
 				case 'toggle_view':
-					if (!$objPage->mobileLayout)
-					{
-						$arrCache[$strTag] = '';
-						break;
-					}
-
 					$strUrl = ampersand(\Environment::get('request'));
 					$strGlue = (strpos($strUrl, '?') === false) ? '?' : '&amp;';
 
-					if ($objPage->isMobile)
+					if (\Input::cookie('TL_VIEW') == 'mobile' || (\Environment::get('agent')->mobile && \Input::cookie('TL_VIEW') != 'desktop'))
 					{
 						$arrCache[$strTag] = '<a href="' . $strUrl . $strGlue . 'toggle_view=desktop" class="toggle_desktop" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['toggleDesktop'][1]) . '">' . $GLOBALS['TL_LANG']['MSC']['toggleDesktop'][0] . '</a>';
 					}
@@ -1366,13 +1341,8 @@ abstract class Controller extends \System
 					{
 						for (; $_rit<$_cnt; $_rit+=3)
 						{
-							if ($tags[$_rit+1] == 'iflng')
+							if ($tags[$_rit+1] == 'iflng' || $tags[$_rit+1] == 'iflng::' . $objPage->language)
 							{
-								break;
-							}
-							elseif (strncmp($tags[$_rit+1], 'iflng::', 7) === 0)
-							{
-								$_rit += 3;
 								break;
 							}
 						}
@@ -1392,11 +1362,6 @@ abstract class Controller extends \System
 							{
 								if ($tags[$_rit+1] == 'ifnlng')
 								{
-									break;
-								}
-								elseif (strncmp($tags[$_rit+1], 'ifnlng::', 8) === 0)
-								{
-									$_rit += 3;
 									break;
 								}
 							}
@@ -1643,51 +1608,50 @@ abstract class Controller extends \System
 				case 'file':
 					if (\Validator::isUuid($elements[1]))
 					{
-						$objFile = \FilesModel::findByUuid(\String::uuidToBin($elements[1]));
+						$objFile = \FilesModel::findByUuid($elements[1]);
 
 						if ($objFile !== null)
 						{
 							$arrCache[$strTag] = $objFile->path;
+							break;
 						}
 					}
-					else
+
+					$arrGet = $_GET;
+					\Input::resetCache();
+					$strFile = $elements[1];
+
+					// Take arguments and add them to the $_GET array
+					if (strpos($elements[1], '?') !== false)
 					{
-						$arrGet = $_GET;
-						\Input::resetCache();
-						$strFile = $elements[1];
+						$arrChunks = explode('?', urldecode($elements[1]));
+						$strSource = \String::decodeEntities($arrChunks[1]);
+						$strSource = str_replace('[&]', '&', $strSource);
+						$arrParams = explode('&', $strSource);
 
-						// Take arguments and add them to the $_GET array
-						if (strpos($elements[1], '?') !== false)
+						foreach ($arrParams as $strParam)
 						{
-							$arrChunks = explode('?', urldecode($elements[1]));
-							$strSource = \String::decodeEntities($arrChunks[1]);
-							$strSource = str_replace('[&]', '&', $strSource);
-							$arrParams = explode('&', $strSource);
-
-							foreach ($arrParams as $strParam)
-							{
-								$arrParam = explode('=', $strParam);
-								$_GET[$arrParam[0]] = $arrParam[1];
-							}
-
-							$strFile = $arrChunks[0];
+							$arrParam = explode('=', $strParam);
+							$_GET[$arrParam[0]] = $arrParam[1];
 						}
 
-						// Sanitize path
-						$strFile = str_replace('../', '', $strFile);
-
-						// Include .php, .tpl, .xhtml and .html5 files
-						if (preg_match('/\.(php|tpl|xhtml|html5)$/', $strFile) && file_exists(TL_ROOT . '/templates/' . $strFile))
-						{
-							ob_start();
-							include TL_ROOT . '/templates/' . $strFile;
-							$arrCache[$strTag] = ob_get_contents();
-							ob_end_clean();
-						}
-
-						$_GET = $arrGet;
-						\Input::resetCache();
+						$strFile = $arrChunks[0];
 					}
+
+					// Sanitize path
+					$strFile = str_replace('../', '', $strFile);
+
+					// Include .php, .tpl, .xhtml and .html5 files
+					if (preg_match('/\.(php|tpl|xhtml|html5)$/', $strFile) && file_exists(TL_ROOT . '/templates/' . $strFile))
+					{
+						ob_start();
+						include TL_ROOT . '/templates/' . $strFile;
+						$arrCache[$strTag] = ob_get_contents();
+						ob_end_clean();
+					}
+
+					$_GET = $arrGet;
+					\Input::resetCache();
 					break;
 
 				// HOOK: pass unknown tags to callback functions
@@ -2583,10 +2547,13 @@ abstract class Controller extends \System
 			}
 		}
 
+		// Do not override the "href" key (see #6468)
+		$strHrefKey = ($objTemplate->href != '') ? 'imageHref' : 'href';
+
 		// Image link
 		if ($arrItem['imageUrl'] != '' && TL_MODE == 'FE')
 		{
-			$objTemplate->href = $arrItem['imageUrl'];
+			$objTemplate->$strHrefKey = $arrItem['imageUrl'];
 			$objTemplate->attributes = '';
 
 			if ($arrItem['fullsize'])
@@ -2597,7 +2564,7 @@ abstract class Controller extends \System
 					// Do not add the TL_FILES_URL to external URLs (see #4923)
 					if (strncmp($arrItem['imageUrl'], 'http://', 7) !== 0 && strncmp($arrItem['imageUrl'], 'https://', 8) !== 0)
 					{
-						$objTemplate->href = TL_FILES_URL . \System::urlEncode($arrItem['imageUrl']);
+						$objTemplate->$strHrefKey = TL_FILES_URL . \System::urlEncode($arrItem['imageUrl']);
 					}
 
 					$objTemplate->attributes = ($objPage->outputFormat == 'xhtml') ? ' rel="' . $strLightboxId . '"' : ' data-lightbox="' . substr($strLightboxId, 9, -1) . '"';
@@ -2612,7 +2579,7 @@ abstract class Controller extends \System
 		// Fullsize view
 		elseif ($arrItem['fullsize'] && TL_MODE == 'FE')
 		{
-			$objTemplate->href = TL_FILES_URL . \System::urlEncode($arrItem['singleSRC']);
+			$objTemplate->$strHrefKey = TL_FILES_URL . \System::urlEncode($arrItem['singleSRC']);
 			$objTemplate->attributes = ($objPage->outputFormat == 'xhtml') ? ' rel="' . $strLightboxId . '"' : ' data-lightbox="' . substr($strLightboxId, 9, -1) . '"';
 		}
 
